@@ -1,5 +1,9 @@
 "use client";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { gameRecordsState } from "@/libs/recoil/gameRecordState";
+import Button from "@/components/elements/Button";
+import LinkButton from "@/components/elements/LinkButton";
 
 const stages = [
   {
@@ -57,7 +61,17 @@ const stages = [
 const GameStage = () => {
   const [currentStage, setCurrentStage] = useState(0);
   const [score, setScore] = useState(0);
+  const [gameStartTime, setGameStartTime] = useState<string | null>(null);
+  const [gameRecords, setGameRecords] = useRecoilState(gameRecordsState);
 
+  useEffect(() => {
+    const getCurrentTime = (): string => {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    };
+
+    setGameStartTime(getCurrentTime());
+  }, []);
   const handleAnswer = (answer: string) => {
     if (answer === stages[currentStage].answer) {
       setScore(score + 1);
@@ -65,10 +79,25 @@ const GameStage = () => {
     setCurrentStage(currentStage + 1);
   };
 
+  useEffect(() => {
+    if (currentStage >= stages.length && gameStartTime) {
+      const newRecord = {
+        startTime: gameStartTime,
+        score: score,
+      };
+      setGameRecords((prevRecords) => [...prevRecords, newRecord]);
+      console.log("새로운 기록이 저장되었습니다:", newRecord);
+    }
+  }, [currentStage, gameStartTime, score, setGameRecords]);
+
   if (currentStage >= stages.length) {
     return (
-      <div>
-        게임 종료! 점수: {score} / {stages.length}
+      <div className="flex flex-col gap-4">
+        <div>
+          게임 종료! 점수: {score} / {stages.length}
+        </div>
+        <LinkButton name="홈으로 돌아가기" href="/" />
+        <LinkButton name="진행 상황 확인하기" href="/progress" />
       </div>
     );
   }
@@ -76,15 +105,13 @@ const GameStage = () => {
   return (
     <div className="flex flex-col items-center">
       <img src={stages[currentStage].image} alt="쓰레기" className="mb-4" />
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap gap-4">
         {stages[currentStage].options.map((option) => (
-          <button
+          <Button
             key={option}
+            name={option}
             onClick={() => handleAnswer(option)}
-            className="bg-blue-500 text-white px-4 py-2 rounded m-2"
-          >
-            {option}
-          </button>
+          />
         ))}
       </div>
     </div>

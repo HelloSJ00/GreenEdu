@@ -22,7 +22,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gradient-to-r from-green-800 to-green-400 p-4 flex justify-between items-center">
+    <header className="bg-gradient-to-r from-green-800 to-green-400 p-4 flex justify-between items-center fixed top-0 left-0 w-full z-50">
       <Link href="/" className="text-lg font-bold text-white">
         그린 에듀케이션
       </Link>
