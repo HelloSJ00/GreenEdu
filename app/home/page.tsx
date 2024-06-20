@@ -15,7 +15,7 @@ const Home = () => {
     }
   }, [isLoggedIn, router]);
   return (
-    <div className="flex flex-col items-center justify-between h-[500px] gap-6">
+    <div className="flex flex-col items-center justify-between gap-6">
       <Link
         href="/game"
         className="bg-blue-500 text-white px-4 py-2 rounded mb-2"
@@ -39,12 +39,6 @@ const Home = () => {
         className="bg-purple-500 text-white px-4 py-2 rounded mb-2"
       >
         학습진행상황 알아보기
-      </Link>
-      <Link
-        href="/feedback"
-        className="bg-red-500 text-white px-4 py-2 rounded"
-      >
-        피드백 받아보기
       </Link>
     </div>
   );

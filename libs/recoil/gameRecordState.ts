@@ -1,9 +1,5 @@
 import { atom } from "recoil";
-
-interface GameRecord {
-  startTime: string;
-  score: number;
-}
+import { GameRecord } from "@/types/types";
 
 export const gameRecordsState = atom<GameRecord[]>({
   key: "gameRecordsState",

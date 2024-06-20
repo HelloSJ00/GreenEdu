@@ -4,65 +4,71 @@ import { useRecoilState } from "recoil";
 import { gameRecordsState } from "@/libs/recoil/gameRecordState";
 import Button from "@/components/elements/Button";
 import LinkButton from "@/components/elements/LinkButton";
+import { GameRecord, IncorrectAnswer } from "@/types/types";
 
 const stages = [
   {
-    image: "/images/pet-bottle.jpg",
+    image: "/image/pet.png",
     options: ["일반쓰레기", "음식물 쓰레기", "캔", "페트병", "박스"],
     answer: "페트병",
   },
   {
-    image: "/images/banana-peel.jpg",
+    image: "/image/umsse.png",
     options: ["일반쓰레기", "음식물 쓰레기", "캔", "페트병", "박스"],
     answer: "음식물 쓰레기",
   },
   {
-    image: "/images/cardboard-box.jpg",
+    image: "/image/box.png",
     options: ["일반쓰레기", "음식물 쓰레기", "캔", "페트병", "박스"],
     answer: "박스",
   },
   {
-    image: "/images/aluminum-can.jpg",
+    image: "/image/can.png",
     options: ["일반쓰레기", "음식물 쓰레기", "캔", "페트병", "박스"],
     answer: "캔",
   },
   {
-    image: "/images/glass-bottle.jpg",
+    image: "/image/glass.png",
     options: ["일반쓰레기", "음식물 쓰레기", "유리병", "페트병", "박스"],
     answer: "유리병",
   },
   {
-    image: "/images/plastic-bag.jpg",
+    image: "/image/plastic.png",
     options: ["일반쓰레기", "음식물 쓰레기", "캔", "페트병", "비닐"],
     answer: "비닐",
   },
   {
-    image: "/images/styrofoam.jpg",
+    image: "/image/stiroform.png",
     options: ["일반쓰레기", "음식물 쓰레기", "캔", "스티로폼", "박스"],
     answer: "스티로폼",
   },
   {
-    image: "/images/newspaper.jpg",
+    image: "/image/paper.png",
     options: ["일반쓰레기", "음식물 쓰레기", "캔", "페트병", "종이"],
     answer: "종이",
   },
   {
-    image: "/images/tin-can.jpg",
+    image: "/image/can.png",
     options: ["일반쓰레기", "음식물 쓰레기", "캔", "페트병", "박스"],
     answer: "캔",
   },
   {
-    image: "/images/egg-shells.jpg",
+    image: "/image/umsse.png",
     options: ["일반쓰레기", "음식물 쓰레기", "캔", "페트병", "박스"],
     answer: "음식물 쓰레기",
   },
 ];
+// types.ts
 
 const GameStage = () => {
   const [currentStage, setCurrentStage] = useState(0);
   const [score, setScore] = useState(0);
+  const [incorrectAnswers, setIncorrectAnswers] = useState<IncorrectAnswer[]>(
+    []
+  );
   const [gameStartTime, setGameStartTime] = useState<string | null>(null);
-  const [gameRecords, setGameRecords] = useRecoilState(gameRecordsState);
+  const [gameRecords, setGameRecords] =
+    useRecoilState<GameRecord[]>(gameRecordsState);
 
   useEffect(() => {
     const getCurrentTime = (): string => {
@@ -72,23 +78,30 @@ const GameStage = () => {
 
     setGameStartTime(getCurrentTime());
   }, []);
+
   const handleAnswer = (answer: string) => {
     if (answer === stages[currentStage].answer) {
       setScore(score + 1);
+    } else {
+      setIncorrectAnswers((prevIncorrect) => [
+        ...prevIncorrect,
+        { stage: currentStage + 1, selected: answer },
+      ]);
     }
     setCurrentStage(currentStage + 1);
   };
 
   useEffect(() => {
     if (currentStage >= stages.length && gameStartTime) {
-      const newRecord = {
+      const newRecord: GameRecord = {
         startTime: gameStartTime,
         score: score,
+        incorrect: incorrectAnswers,
       };
       setGameRecords((prevRecords) => [...prevRecords, newRecord]);
       console.log("새로운 기록이 저장되었습니다:", newRecord);
     }
-  }, [currentStage, gameStartTime, score, setGameRecords]);
+  }, [currentStage, gameStartTime, score, incorrectAnswers, setGameRecords]);
 
   if (currentStage >= stages.length) {
     return (

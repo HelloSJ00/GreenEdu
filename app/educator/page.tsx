@@ -16,7 +16,7 @@ const Educator = () => {
     }
   }, [isLoggedIn, router]);
   return (
-    <div className="flex flex-col items-center justify-between h-[500px] gap-6">
+    <div className="flex flex-col items-center justify-between gap-6">
       <Link
         href="/progress"
         className="bg-purple-500 text-white px-4 py-2 rounded mb-2"
